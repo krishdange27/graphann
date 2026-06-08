@@ -1,177 +1,318 @@
-# GraphANN — Educational Vamana Index
+# GraphANN Enhancements
 
-A clean, modular C++ implementation of the **Vamana graph-based approximate nearest neighbor (ANN) index** for students to learn, experiment with, and extend.
-
-Implements the core algorithm from [*DiskANN: Fast Accurate Billion-point Nearest Neighbor Search on a Single Node*](https://proceedings.neurips.cc/paper/2019/hash/09853c7fb1d3f8ee67a61b6bf4a7f8e6-Abstract.html) (NeurIPS 2019).
-
----
-
-## Algorithm Overview
-
-### Build Phase
-For each point (in a random order, parallelized with OpenMP):
-
-1. **Greedy Search**: Search the current graph for the point itself, producing a candidate list of size `L`
-2. **Robust Prune (α-RNG)**: Prune candidates to at most `R` diverse neighbors using the alpha-RNG rule — a candidate `c` is kept only if `dist(node, c) ≤ α · dist(c, n)` for all already-selected neighbors `n`
-3. **Add Edges**: Set forward edges; add backward edges to each neighbor
-4. **Degree Check**: If any neighbor's degree exceeds `γR`, prune its neighborhood
-
-Per-node mutexes ensure correctness during parallel construction.
-
-### Search Phase
-Greedy beam search starting from a fixed start node, maintaining a candidate set bounded at size `L`. Returns the top-`K` closest points found.
-
-### Parameters
-| Parameter | Typical Range | Description |
-|-----------|--------------|-------------|
-| `R` | 32–64 | Max out-degree (graph connectivity) |
-| `L` (build) | 75–200 | Search list size during construction (≥ R) |
-| `α` (alpha) | 1.0–1.5 | RNG pruning threshold (> 1 keeps long-range edges) |
-| `γ` (gamma) | 1.2–1.5 | Degree multiplier triggering neighbor pruning |
-| `L` (search) | 10–200 | Search list size at query time (≥ K) |
-| `K` | 1–100 | Number of nearest neighbors to return |
+> Algorithms for Data Science Course Project
+>
+> Enhancement of GraphANN through:
+>
+> - Navigation Optimization
+> - Entropy-Based Edge Pruning
+> - Adaptive Graph Learning
 
 ---
 
-## Project Structure
+## Overview
 
-```
+This project extends the GraphANN Approximate Nearest Neighbor (ANN) search framework based on the Vamana graph index.
+
+The goal of this project is to improve graph traversal efficiency while maintaining high search quality on large-scale datasets.
+
+The original implementation was provided as part of the course project. Our work introduces three enhancements aimed at improving graph quality and search efficiency:
+
+1. Navigation Optimization
+2. Entropy-Based Edge Pruning
+3. Adaptive Graph Learning
+
+All experiments were evaluated on the SIFT1M benchmark dataset.
+
+---
+
+## Project Evolution
+
+### Stage 1: Original GraphANN
+
+The baseline implementation uses:
+
+- Vamana graph construction
+- Greedy beam search
+- Alpha-RNG robust pruning
+
+---
+
+### Stage 2: Navigation Optimization
+
+Introduced edge usefulness scores to guide graph traversal toward more informative neighbors.
+
+Benefits:
+
+- Better graph navigation
+- Reduced unnecessary exploration
+
+---
+
+### Stage 3: Entropy-Based Edge Pruning
+
+Modified the pruning process by incorporating neighborhood diversity.
+
+Benefits:
+
+- Improved graph structure
+- Better balance between local and long-range connectivity
+
+---
+
+### Stage 4: Adaptive Graph Learning
+
+Introduced online graph refinement based on query feedback.
+
+Benefits:
+
+- Dynamic graph improvement
+- Adaptive restructuring of graph connectivity
+
+---
+
+# Repository Structure
+
+```text
 graphann/
-├── CMakeLists.txt              # Build config (C++17, OpenMP, -O3 -march=native)
-├── README.md
+│
+├── src/
+│   ├── build_index.cpp
+│   ├── search_index.cpp
+│   ├── distance.cpp
+│   ├── io_utils.cpp
+│   └── vamana_index.cpp
+│
 ├── include/
-│   ├── distance.h              # Squared L2 distance function
-│   ├── io_utils.h              # fbin/ibin file loaders
-│   ├── timer.h                 # Simple chrono-based timer
-│   └── vamana_index.h          # VamanaIndex class declaration
+│   ├── distance.h
+│   ├── io_utils.h
+│   ├── timer.h
+│   └── vamana_index.h
+│
 ├── scripts/
-│   ├── convert_vecs.py         # Convert fvecs/ivecs → fbin/ibin
-│   └── run_sift1m.sh           # One-command SIFT1M download, build & search
-└── src/
-    ├── distance.cpp            # Distance implementation
-    ├── io_utils.cpp            # File I/O implementation
-    ├── vamana_index.cpp        # Core: greedy_search, robust_prune, build, search
-    ├── build_index.cpp         # CLI: build index from data
-    └── search_index.cpp        # CLI: search + recall/latency evaluation
+│   ├── convert_vecs.py
+│   └── run_sift1m.sh
+│
+├── docs/
+│   ├── project_timeline.md
+│   ├── enhancement_design.md
+│   ├── future_work.md
+│   └── comparison_with_submission2.md
+│
+├── reports/
+│   ├── proposal.pdf
+│   ├── milestone1.pdf
+│   ├── enhancement_report.pdf
+│   ├── final_presentation.pdf
+│   └── diskann_original_paper.pdf
+│
+├── results/
+│   ├── baseline_results.md
+│   ├── enhanced_results.md
+│   └── comparison.md
+│
+├── CMakeLists.txt
+└── README.md
 ```
 
-### Key files to study
-- **`src/vamana_index.cpp`** — the core algorithm: `greedy_search()`, `robust_prune()`, `build()`
-- **`include/vamana_index.h`** — data structures (adjacency list graph, per-node locks)
+---
+
+# Dataset
+
+Experiments were performed using the SIFT1M benchmark dataset.
+
+Dataset Statistics:
+
+| Property | Value |
+|-----------|---------|
+| Base Vectors | 1,000,000 |
+| Query Vectors | 10,000 |
+| Dimensions | 128 |
 
 ---
+
+# Experimental Setup
+
+## Index Construction Parameters
+
+| Parameter | Value |
+|------------|--------|
+| R | 32 |
+| Build L | 75 |
+| Alpha | 1.2 |
+| Gamma | 1.5 |
+
+## Search Parameters
+
+| Parameter | Value |
+|------------|--------|
+| K | 10 |
+| Search L | 10,20,30,50,75,100,150,200 |
+
+---
+
+# Results Summary
+
+## Baseline GraphANN
+
+| L | Recall@10 |
+|---|---:|
+| 10 | 0.7768 |
+| 20 | 0.8909 |
+| 50 | 0.9665 |
+| 100 | 0.9891 |
+| 200 | 0.9960 |
+
+---
+
+## Enhanced GraphANN
+
+| L | Recall@10 |
+|---|---:|
+| 10 | 0.7734 |
+| 20 | 0.8867 |
+| 50 | 0.9643 |
+| 100 | 0.9857 |
+| 200 | 0.9943 |
+
+---
+
+## Key Observation
+
+The enhanced implementation reduces distance computations while maintaining comparable search quality.
+
+Example:
+
+| Metric | Baseline | Enhanced |
+|----------|----------:|----------:|
+| Recall@10 (L=100) | 0.9891 | 0.9857 |
+| Avg Dist Cmps (L=100) | 2434.9 | 2101.9 |
+
+This corresponds to approximately **13.7% fewer distance computations**.
+
+Complete experimental results are available in the `results/` directory.
+
+---
+
+# Building the Project
+
+## Clone Repository
+
+```bash
+git clone https://github.com/krishdange27/graphann.git
+cd graphann
+```
 
 ## Build
 
-Requirements: C++17 compiler with OpenMP support (GCC ≥ 7, Clang ≥ 10).
-
 ```bash
-mkdir build && cd build
+mkdir build
+cd build
+
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j
 ```
 
-This produces two executables: `build_index` and `search_index`.
-
 ---
 
-## Quick Start — SIFT1M end-to-end
+# Dataset Conversion
 
-A single script downloads the [SIFT1M](http://corpus-texmex.irisa.fr/) dataset, converts it to binary format, builds a Vamana index, and runs search with recall evaluation:
+Convert SIFT `.fvecs` and `.ivecs` files into binary format:
 
 ```bash
-./scripts/run_sift1m.sh
+python3 scripts/convert_vecs.py sift_base.fvecs sift_base.fbin
+python3 scripts/convert_vecs.py sift_query.fvecs sift_query.fbin
+python3 scripts/convert_vecs.py sift_groundtruth.ivecs sift_gt.ibin
 ```
-
-This will:
-1. Build the project (cmake + make)
-2. Download SIFT1M (1M base vectors, 10K queries, ground truth) into `tmp/sift/`
-3. Convert `.fvecs`/`.ivecs` files to `.fbin`/`.ibin` format in `tmp/`
-4. Build a Vamana index with default parameters (R=32, L=75, α=1.2, γ=1.5)
-5. Run search at multiple `L` values and report recall@10, latency, and distance computations
-
-Requires: `curl`, `python3` with `numpy`, and a C++17 compiler with OpenMP.
 
 ---
 
-## Usage
-
-### File Formats
-
-**fbin** (float binary): Used for dataset and query vectors.
-```
-[4 bytes: uint32 npts] [4 bytes: uint32 dims] [npts * dims * 4 bytes: float32 row-major vectors]
-```
-
-**ibin** (int binary): Used for ground truth neighbor IDs.
-```
-[4 bytes: uint32 npts] [4 bytes: uint32 dims] [npts * dims * 4 bytes: uint32 row-major IDs]
-```
-
-Standard ANN benchmark datasets (SIFT, GIST, GloVe, etc.) are available in this format from [ANN Benchmarks](http://ann-benchmarks.com/) and [big-ann-benchmarks](https://big-ann-benchmarks.com/).
-
-### Build an Index
+# Building the Index
 
 ```bash
 ./build_index \
-  --data /path/to/base.fbin \
-  --output /path/to/index.bin \
-  --R 32 --L 75 --alpha 1.2 --gamma 1.5
+  --data sift_base.fbin \
+  --output sift_index.bin \
+  --R 32 \
+  --L 75 \
+  --alpha 1.2 \
+  --gamma 1.5
 ```
 
-### Search and Evaluate
+---
+
+# Running Search
 
 ```bash
 ./search_index \
-  --index /path/to/index.bin \
-  --data /path/to/base.fbin \
-  --queries /path/to/query.fbin \
-  --gt /path/to/gt.ibin \
+  --index sift_index.bin \
+  --data sift_base.fbin \
+  --queries sift_query.fbin \
+  --gt sift_gt.ibin \
   --K 10 \
   --L 10,20,30,50,75,100,150,200
 ```
 
-Output:
-```
-=== Search Results (K=10) ===
-       L     Recall@10   Avg Dist Cmps  Avg Latency (us)  P99 Latency (us)
---------------------------------------------------------------------------
-      10         0.5432           320.5             125.3             412.7
-      20         0.7891           580.2             198.4             623.1
-      50         0.9234          1205.8             385.6            1102.3
-     100         0.9812          2280.4             702.1            2015.8
-     200         0.9965          4350.2            1305.7            3812.4
+---
+
+# Documentation
+
+Project reports and development history are available in:
+
+```text
+reports/
 ```
 
----
+including:
 
-## Performance Notes
-
-- **Parallelism**: OpenMP `parallel for schedule(dynamic)` for both build (point insertion) and search (queries)
-- **Memory layout**: Contiguous row-major float arrays, 64-byte aligned for SIMD
-- **Vectorization**: `-O3 -march=native` auto-vectorizes the L2 distance loop — no manual intrinsics needed
-- **Lock granularity**: Per-node `std::mutex` — threads only contend when updating the *same* node's adjacency list
-- **No external dependencies** beyond OpenMP
+- Project Proposal
+- Milestone 1 Report
+- Enhancement Report
+- Final Presentation
+- Original Research Paper
 
 ---
 
-## Some sample things to try, and start the experimenting with!
+# Reproducibility
 
-0. **Code understanding**: Use AI tools to understand the logic of algorithm and how it is a hueristic approximation of what we discussed in class
+All results reported in this repository were reproduced using:
 
-1. **Beam width experiments**: Try different `L` values during build and measure recall vs build time. What's the sweet spot?
+- Same dataset
+- Same build parameters
+- Same search parameters
 
-2. **Medoid start node**: Replace the random start node with the *medoid* — the point closest to the centroid of the dataset. How does this affect search recall?
-
-3. **Change the edges in index build**: Run the build twice — second pass starts from the graph produced by the first. How does recall change?
-
-4. **Change the search algorithm**: Plot the histogram of node degrees. Is it uniform? What happens with different `α` values?
-
-5. **Concurrent search optimization**: Replace `std::vector<bool> visited` in `greedy_search()` with a pre-allocated scratch buffer to avoid per-query allocation.
+Both baseline and enhanced implementations were evaluated to validate the effectiveness of the proposed enhancements.
 
 ---
 
-## References
+# Future Work
 
-- Subramanya et al., *DiskANN: Fast Accurate Billion-point Nearest Neighbor Search on a Single Node*, NeurIPS 2019
+Potential directions for future research include:
 
+- Evaluation on DEEP1M
+- Evaluation on GIST1M
+- Dynamic insertion and deletion support
+- Learning-based graph optimization
+- Distributed graph construction
+- Hardware-aware ANN search optimization
+
+---
+
+# Contributors
+
+Algorithms for Data Science Project Team
+
+- Krish Dange
+- Team Members
+
+---
+
+# Acknowledgements
+
+This project is based on the GraphANN/Vamana framework provided for the Algorithms for Data Science course.
+
+The original ideas behind graph-based ANN search are inspired by:
+
+- DiskANN
+- Vamana Graph Index
+- Approximate Nearest Neighbor Search literature
