@@ -1,5 +1,22 @@
+# Build artifacts
 build/
 tmp/
+
+# Dataset files
 *.bin
 *.fbin
 *.ibin
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

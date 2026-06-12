@@ -1,103 +1,229 @@
-# GraphANN Enhancements
+# Adaptive DiskANN
 
-> Algorithms for Data Science Course Project
->
-> Enhancement of GraphANN through:
->
-> - Navigation Optimization
-> - Entropy-Based Edge Pruning
-> - Adaptive Graph Learning
+![C++](https://img.shields.io/badge/C%2B%2B-17-blue?logo=c%2B%2B)
+![ANN Search](https://img.shields.io/badge/Domain-Approximate%20Nearest%20Neighbor-purple)
+![Research](https://img.shields.io/badge/Type-Research-success)
+![Published](https://img.shields.io/badge/Publication-IJERT%202026-orange)
+![SIFT1M](https://img.shields.io/badge/Benchmark-SIFT1M-red)
 
----
+### Navigation-Aware Search and Graph Optimization for Approximate Nearest Neighbor Retrieval
 
-## Overview
-
-This project extends the GraphANN Approximate Nearest Neighbor (ANN) search framework based on the Vamana graph index.
-
-The goal of this project is to improve graph traversal efficiency while maintaining high search quality on large-scale datasets.
-
-The original implementation was provided as part of the course project. Our work introduces three enhancements aimed at improving graph quality and search efficiency:
-
-1. Navigation Optimization
-2. Entropy-Based Edge Pruning
-3. Adaptive Graph Learning
-
-All experiments were evaluated on the SIFT1M benchmark dataset.
+**SIFT1M Benchmark • 1M Vectors • 10K Queries • 128 Dimensions**
 
 ---
 
-## Project Evolution
+## Authors
 
-### Stage 1: Original GraphANN
+* Abhijeet Kumar
+* Krish Dange
+* Sai Jagadeesh
 
-The baseline implementation uses:
-
-- Vamana graph construction
-- Greedy beam search
-- Alpha-RNG robust pruning
-
----
-
-### Stage 2: Navigation Optimization
-
-Introduced edge usefulness scores to guide graph traversal toward more informative neighbors.
-
-Benefits:
-
-- Better graph navigation
-- Reduced unnecessary exploration
+Department of Artificial Intelligence and Data Science
+Indian Institute of Technology Madras
 
 ---
 
-### Stage 3: Entropy-Based Edge Pruning
+## Publication
 
-Modified the pruning process by incorporating neighborhood diversity.
+### Making DiskANN Adaptive: Navigation-Aware Search, Diversity Pruning, and Feedback-Driven Graph Refinement for Graph-Based ANN
 
-Benefits:
+**Published in:** International Journal of Engineering Research and Technology (IJERT)
+**Volume:** 15
+**Issue:** 06
+**Publication Date:** June 2026
 
-- Improved graph structure
-- Better balance between local and long-range connectivity
+This repository contains the implementation, benchmark results, and reproducibility artifacts associated with the published research paper.
 
----
-
-### Stage 4: Adaptive Graph Learning
-
-Introduced online graph refinement based on query feedback.
-
-Benefits:
-
-- Dynamic graph improvement
-- Adaptive restructuring of graph connectivity
+**Paper:** `paper/paper.pdf`
+**Publication Certificate:** `paper/certificate.pdf`
 
 ---
 
-# Repository Structure
+## Research Highlights
+
+* Achieves a **17.6% reduction in average distance computations** while maintaining **Recall@10 above 0.99**.
+* Evaluated on the **SIFT1M benchmark** containing **1 million vectors** and **10,000 query vectors**.
+* Introduces navigation-aware graph traversal and feedback-driven graph optimization for graph-based ANN retrieval.
+* Combines traversal prioritization, diversity-aware pruning, and adaptive graph refinement within a Vamana/DiskANN framework.
+* Provides reproducible implementations, benchmark results, project reports, and publication artifacts.
+
+---
+
+## Why Adaptive DiskANN?
+
+Modern vector databases, recommendation systems, semantic search engines, and Retrieval-Augmented Generation (RAG) pipelines depend on efficient Approximate Nearest Neighbor (ANN) search over high-dimensional embeddings.
+
+Graph-based ANN methods such as **Vamana** and **DiskANN** achieve excellent recall-latency tradeoffs by navigating sparse proximity graphs. However, graph traversal frequently explores redundant paths that increase search effort without improving retrieval quality.
+
+Adaptive DiskANN investigates graph-level optimization strategies that improve search efficiency while preserving high recall performance.
+
+The project focuses on:
+
+* **Navigation-Aware Search** for traversal prioritization.
+* **Edge Usefulness Scoring** for identifying valuable graph connections.
+* **Diversity-Aware Pruning** for reducing redundant graph structure.
+* **Adaptive Graph Refinement** using query-feedback information.
+
+Together, these techniques reduce search effort while maintaining the retrieval quality expected from large-scale ANN systems.
+
+---
+
+## Key Results
+
+Adaptive DiskANN was evaluated on the **SIFT1M benchmark** containing **1,000,000 base vectors**, **10,000 query vectors**, and **128-dimensional embeddings**.
+
+### Baseline vs Adaptive DiskANN
+
+| Metric                                      | Baseline GraphANN | Adaptive DiskANN |
+| ------------------------------------------- | ----------------: | ---------------: |
+| Recall@10                                   |            0.9960 |           0.9943 |
+| Avg Distance Computations                   |            4044.6 |           3332.8 |
+| Relative Reduction in Distance Computations |                 – |        **17.6%** |
+
+### Headline Result
+
+> Adaptive DiskANN achieved a **17.6% reduction in average distance computations** while preserving **Recall@10 above 0.99** on the SIFT1M benchmark.
+
+### Key Takeaways
+
+* Maintained **Recall@10 above 0.99** while reducing search effort by **17.6%**.
+* Reduced the number of distance evaluations required during graph traversal.
+* Improved search efficiency without significant recall degradation.
+* Demonstrated effectiveness on a large-scale benchmark containing one million vectors.
+
+---
+
+## Contributions
+
+### Team Contributions
+
+* Designed and evaluated Adaptive DiskANN enhancements for graph-based ANN retrieval.
+* Developed a reproducible experimental framework for large-scale ANN benchmarking.
+* Conducted comparative analysis between baseline and adaptive search strategies.
+* Evaluated performance using recall, latency, and search-effort metrics.
+* Authored and published the associated research paper.
+
+### My Contributions
+
+* Implemented Navigation-Aware Search for graph traversal optimization.
+* Developed Edge Usefulness Scoring mechanisms for traversal prioritization.
+* Contributed to benchmarking and large-scale evaluation on the SIFT1M dataset.
+* Participated in repository organization, documentation, and reproducibility workflows.
+
+My contributions focused primarily on search adaptation, traversal optimization, and experimental validation within the Adaptive DiskANN framework.
+
+---
+
+## System Architecture
+
+Adaptive DiskANN extends a DiskANN-style graph search pipeline with navigation-aware traversal, edge usefulness estimation, diversity-aware pruning, and feedback-driven graph refinement.
+
+```text
+                Query
+                  │
+                  ▼
+     Navigation-Aware Search
+                  │
+                  ▼
+        Candidate Expansion
+                  │
+                  ▼
+      Edge Usefulness Scoring
+                  │
+                  ▼
+     Adaptive Graph Refinement
+                  │
+                  ▼
+            Top-K Results
+```
+
+The system uses information gathered during query execution to identify valuable graph connections, enabling future searches to prioritize more effective traversal paths while preserving retrieval quality.
+
+---
+
+## Core Innovations
+
+### Navigation-Aware Search
+
+Introduces traversal prioritization mechanisms that guide graph exploration toward historically useful search paths, reducing unnecessary node expansions and distance evaluations.
+
+### Edge Usefulness Scoring
+
+Maintains edge-level usefulness information derived from search behavior, allowing the traversal process to distinguish between highly informative and less informative graph connections.
+
+### Diversity-Aware Pruning
+
+Preserves graph navigability while reducing redundant neighborhood structure, helping maintain search quality with lower traversal overhead.
+
+### Adaptive Graph Refinement
+
+Uses query feedback collected during search to improve graph connectivity over time, reinforcing useful connections and improving future search efficiency.
+
+---
+
+## Experimental Methodology
+
+### Dataset
+
+**SIFT1M**
+
+* 1,000,000 base vectors
+* 10,000 query vectors
+* 128 dimensions
+
+### Evaluation Metrics
+
+* Recall@10
+* Average Distance Computations
+* Average Search Latency
+* P99 Latency
+
+### Evaluation Pipeline
+
+```text
+SIFT1M Dataset
+      │
+      ▼
+Baseline GraphANN
+      │
+      ▼
+Adaptive DiskANN
+      │
+      ├── Recall@10
+      ├── Distance Computations
+      ├── Average Latency
+      └── P99 Latency
+```
+
+---
+
+## Detailed Benchmark Results
+
+Complete benchmark data and experimental configurations are available in:
+
+* `results/baseline_results.md`
+* `results/adaptive_results.md`
+* `results/comparison.md`
+* `results/experiment_setup.md`
+
+---
+
+## Repository Structure
 
 ```text
 graphann/
 │
-├── src/
-│   ├── build_index.cpp
-│   ├── search_index.cpp
-│   ├── distance.cpp
-│   ├── io_utils.cpp
-│   └── vamana_index.cpp
-│
-├── include/
-│   ├── distance.h
-│   ├── io_utils.h
-│   ├── timer.h
-│   └── vamana_index.h
-│
-├── scripts/
-│   ├── convert_vecs.py
-│   └── run_sift1m.sh
+├── src/                      # Core Adaptive DiskANN implementation
+├── include/                  # Header files
+├── scripts/                  # Dataset conversion and benchmarking utilities
 │
 ├── docs/
-│   ├── project_timeline.md
-│   ├── enhancement_design.md
-│   ├── future_work.md
-│   └── comparison_with_submission2.md
+│   └── project_timeline.md
+│
+├── paper/
+│   ├── paper.pdf
+│   ├── certificate.pdf
+│   └── README.md
 │
 ├── reports/
 │   ├── proposal.pdf
@@ -108,102 +234,21 @@ graphann/
 │
 ├── results/
 │   ├── baseline_results.md
-│   ├── enhanced_results.md
-│   └── comparison.md
+│   ├── adaptive_results.md
+│   ├── comparison.md
+│   └── experiment_setup.md
 │
+├── CITATION.bib
 ├── CMakeLists.txt
-└── README.md
+├── README.md
+└── .gitignore
 ```
 
 ---
 
-# Dataset
+## Quick Start
 
-Experiments were performed using the SIFT1M benchmark dataset.
-
-Dataset Statistics:
-
-| Property | Value |
-|-----------|---------|
-| Base Vectors | 1,000,000 |
-| Query Vectors | 10,000 |
-| Dimensions | 128 |
-
----
-
-# Experimental Setup
-
-## Index Construction Parameters
-
-| Parameter | Value |
-|------------|--------|
-| R | 32 |
-| Build L | 75 |
-| Alpha | 1.2 |
-| Gamma | 1.5 |
-
-## Search Parameters
-
-| Parameter | Value |
-|------------|--------|
-| K | 10 |
-| Search L | 10,20,30,50,75,100,150,200 |
-
----
-
-# Results Summary
-
-## Baseline GraphANN
-
-| L | Recall@10 |
-|---|---:|
-| 10 | 0.7768 |
-| 20 | 0.8909 |
-| 50 | 0.9665 |
-| 100 | 0.9891 |
-| 200 | 0.9960 |
-
----
-
-## Enhanced GraphANN
-
-| L | Recall@10 |
-|---|---:|
-| 10 | 0.7734 |
-| 20 | 0.8867 |
-| 50 | 0.9643 |
-| 100 | 0.9857 |
-| 200 | 0.9943 |
-
----
-
-## Key Observation
-
-The enhanced implementation reduces distance computations while maintaining comparable search quality.
-
-Example:
-
-| Metric | Baseline | Enhanced |
-|----------|----------:|----------:|
-| Recall@10 (L=100) | 0.9891 | 0.9857 |
-| Avg Dist Cmps (L=100) | 2434.9 | 2101.9 |
-
-This corresponds to approximately **13.7% fewer distance computations**.
-
-Complete experimental results are available in the `results/` directory.
-
----
-
-# Building the Project
-
-## Clone Repository
-
-```bash
-git clone https://github.com/krishdange27/graphann.git
-cd graphann
-```
-
-## Build
+### Build
 
 ```bash
 mkdir build
@@ -213,106 +258,81 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j
 ```
 
----
+This produces:
 
-# Dataset Conversion
-
-Convert SIFT `.fvecs` and `.ivecs` files into binary format:
-
-```bash
-python3 scripts/convert_vecs.py sift_base.fvecs sift_base.fbin
-python3 scripts/convert_vecs.py sift_query.fvecs sift_query.fbin
-python3 scripts/convert_vecs.py sift_groundtruth.ivecs sift_gt.ibin
-```
+* `build_index`
+* `search_index`
 
 ---
 
-# Building the Index
+## Build Instructions
+
+### Build Index
 
 ```bash
 ./build_index \
-  --data sift_base.fbin \
-  --output sift_index.bin \
+  --data <dataset.fbin> \
+  --output <index.bin> \
   --R 32 \
   --L 75 \
   --alpha 1.2 \
   --gamma 1.5
 ```
 
----
-
-# Running Search
+### Run Search
 
 ```bash
 ./search_index \
-  --index sift_index.bin \
-  --data sift_base.fbin \
-  --queries sift_query.fbin \
-  --gt sift_gt.ibin \
+  --index <index.bin> \
+  --data <dataset.fbin> \
+  --queries <queries.fbin> \
+  --gt <groundtruth.ibin> \
   --K 10 \
   --L 10,20,30,50,75,100,150,200
 ```
 
 ---
 
-# Documentation
+## Research Artifacts
 
-Project reports and development history are available in:
+### Publication
 
-```text
-reports/
+* Published research paper
+* Publication certificate
+
+### Experimental Results
+
+* Baseline GraphANN evaluation
+* Adaptive DiskANN evaluation
+* Comparative analysis
+* Experimental setup and configuration
+
+### Development Reports
+
+* Project proposal
+* Milestone report
+* Enhancement report
+* Final presentation
+
+### Reference Material
+
+* Original DiskANN paper used as the baseline reference
+
+---
+
+## Citation
+
+If you use this repository or build upon this work, please cite:
+
+```bibtex
+@article{adaptive_diskann_2026,
+  title   = {Making DiskANN Adaptive: Navigation-Aware Search, Diversity Pruning, and Feedback-Driven Graph Refinement for Graph-Based ANN},
+  author  = {Abhijeet Kumar and Krish Dange and Sai Jagadeesh},
+  journal = {International Journal of Engineering Research and Technology},
+  volume  = {15},
+  number  = {06},
+  year    = {2026}
+}
 ```
 
-including:
-
-- Project Proposal
-- Milestone 1 Report
-- Enhancement Report
-- Final Presentation
-- Original Research Paper
-
----
-
-# Reproducibility
-
-All results reported in this repository were reproduced using:
-
-- Same dataset
-- Same build parameters
-- Same search parameters
-
-Both baseline and enhanced implementations were evaluated to validate the effectiveness of the proposed enhancements.
-
----
-
-# Future Work
-
-Potential directions for future research include:
-
-- Evaluation on DEEP1M
-- Evaluation on GIST1M
-- Dynamic insertion and deletion support
-- Learning-based graph optimization
-- Distributed graph construction
-- Hardware-aware ANN search optimization
-
----
-
-# Contributors
-
-Algorithms for Data Science Project Team
-
-- Krish Dange
-- Team Members
-
----
-
-# Acknowledgements
-
-This project is based on the GraphANN/Vamana framework provided for the Algorithms for Data Science course.
-
-The original ideas behind graph-based ANN search are inspired by:
-
-- DiskANN
-- Vamana Graph Index
-- Approximate Nearest Neighbor Search literature
+See `CITATION.bib` for complete citation metadata.

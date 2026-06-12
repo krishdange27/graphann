@@ -1,6 +1,13 @@
 # Baseline Results
 
-Dataset: SIFT1M
+Original GraphANN implementation without any proposed modifications.
+
+Dataset:
+- SIFT1M
+
+Purpose:
+Serves as the reference baseline for all subsequent comparisons.
+
 
 Parameters:
 - R = 32
